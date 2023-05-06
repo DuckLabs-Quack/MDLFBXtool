@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FBXtoMDL": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" \"C:\\\\FBXtoMDLoutput\" \"Character\" \"Hair\" 20 \"Hrothgar Male\""
+    }
+  }
+}
