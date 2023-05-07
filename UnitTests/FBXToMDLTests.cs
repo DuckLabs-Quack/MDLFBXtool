@@ -19,6 +19,8 @@ namespace UnitTests
         string outputFileName = "UNITTEST";
         string filetype = ".fbx";
 
+        string fbxfilePath = "C:\\Blender\\FF14\\Windcallerhair\\Windcaller_withoutbead_hrothgar.fbx";
+
         [TestMethod]
         public async Task Initialize()
         {
@@ -59,7 +61,7 @@ namespace UnitTests
             result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, null, filetype);
             Assert.IsTrue(result == 1);
 
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race,outputFileName + "7", "");
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName + "7", "");
             Assert.IsTrue(result == 0);
 
             result = await FBXToMDL.ExportMdlToFile("", "", -11, 0, "", "");
@@ -88,12 +90,52 @@ namespace UnitTests
 
         [TestMethod]
         public async Task ExportMdlToFile_nocache()
-        {;
+        {
             Assert.IsFalse(FBXToMDL.InternalVariablesExist());
 
             int result;
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, 0, outputFileName + "10", filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName + "10", filetype);
             Assert.IsTrue(result == 0);
+        }
+
+        [TestMethod]
+        public async Task ConvertToMdlFile()
+        {
+            await FBXToMDL.Initialize(gameDir, outputDir, language);
+            Assert.IsTrue(FBXToMDL.InternalVariablesExist());
+
+            int result;
+
+            //** Base tests
+            //
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, race, fbxfilePath);
+            Assert.IsTrue(result == 1);
+
+            //** Missing parameter tests
+            result = await FBXToMDL.ConvertToMdlFile("", secondaryCategory, index, race, fbxfilePath);
+            Assert.IsTrue(result == 0);
+
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, "", index, race, fbxfilePath);
+            Assert.IsTrue(result == 0);
+
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, -11, race, fbxfilePath);
+            Assert.IsTrue(result == 0);
+
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, race, "");
+            Assert.IsTrue(result == 0);
+
+            result = await FBXToMDL.ConvertToMdlFile("", "", -11, race, "");
+            Assert.IsTrue(result == 0);
+
+            //** Incorrect parameter tests
+            // Invalid strings
+            result = await FBXToMDL.ConvertToMdlFile("EH", "EH", index, race, "NOT_A_PATH");
+            Assert.IsTrue(result == 0);
+
+            // Index out of range
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, 28392, race, fbxfilePath);
+            Assert.IsTrue(result == 0);
+
         }
     }
 }

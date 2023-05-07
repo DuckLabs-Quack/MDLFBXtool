@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using xivModdingFramework.Cache;
@@ -10,6 +12,7 @@ using xivModdingFramework.Items;
 using xivModdingFramework.Items.DataContainers;
 using xivModdingFramework.Items.Interfaces;
 using xivModdingFramework.Models.FileTypes;
+using xivModdingFramework.SqPack.FileTypes;
 
 namespace FBXtoMDL
 {
@@ -51,34 +54,21 @@ namespace FBXtoMDL
             return 1;
         }
 
-        // TODO: Implement this method
-        public static async Task<int> ConvertToMdlFile()
+        private static Tuple<IItemModel, Mdl> ObtainMdlFromList(string primaryCategory, string secondaryCategory, int index, XivRace race)
         {
             if (!InternalVariablesExist())
             {
-                return 0;
-            }
-
-            //await mdl.ImportModel(itemModel, XivRace.Hrothgar_Male, null, null, null, null, "", null, false);
-            return 1;
-        }
-
-        public static async Task<int> ExportMdlToFile(string primaryCategory, string secondaryCategory, int index, XivRace race, string outputFileName = "", string fileExtension = ".fbx")
-        {
-            if (!InternalVariablesExist()) 
-            {
-                return 0;
+                return null;
             }
 
             // Parameter check
             if (String.IsNullOrWhiteSpace(primaryCategory)
                 || String.IsNullOrWhiteSpace(secondaryCategory)
                 || index < 0
-                || race < 0 // TODO: check race matches any value in enum?? race will always be default
-                || String.IsNullOrWhiteSpace(fileExtension))
+                || race < 0 ) // TODO: check race matches any value in enum?? race will always be default
             {
                 // TODO: Return a way to tell user which value is null
-                return 0;
+                return null;
             }
 
             // Specifies the number ID to obtain from the given item
@@ -91,10 +81,10 @@ namespace FBXtoMDL
                 // Obtaining the models from a category 
                 var item = _itemlist.Find(x => x.PrimaryCategory == primaryCategory && x.SecondaryCategory == secondaryCategory && x.Name == race.GetDisplayName());
 
-                if (item == null) 
+                if (item == null)
                 {
                     // Couldn't find item
-                    return 0;
+                    return null;
                 }
 
                 var dataFile = IOUtil.GetDataFileFromPath(item.GetItemRootFolder());
@@ -103,13 +93,80 @@ namespace FBXtoMDL
                 IItemModel itemModel = (IItemModel)item;
                 itemModel.ModelInfo = xivModelInfo;
 
+                return Tuple.Create(itemModel,mdl);
+            }
+            catch (Exception e)
+            {
+                // TODO: Needs better exception handling???
+                return null;
+            }
+        }
+
+        public static async Task<int> ConvertToMdlFile(string primaryCategory, string secondaryCategory, int index, XivRace race, string filePath)
+        {
+            // Parameter check
+            if (String.IsNullOrWhiteSpace(primaryCategory)
+                || String.IsNullOrWhiteSpace(secondaryCategory)
+                || index < 0
+                || race < 0
+                || String.IsNullOrWhiteSpace(filePath)// TODO: check race matches any value in enum?? race will always be default
+                )
+            {
+                // TODO: Return a way to tell user which value is null
+                return 0;
+            }
+
+            try
+            {
+                Tuple<IItemModel, Mdl>? modelData = ObtainMdlFromList(primaryCategory, secondaryCategory, index, race);
+
+                if (modelData == null)
+                {
+                    // Couldn't retrieve model data
+                    return 0;
+                }
+
+                await modelData.Item2.ImportModel(modelData.Item1, race, filePath, null, null, null, "", null, false);
+                return 1;
+            }
+            catch (Exception e)
+            {
+                // TODO: Needs better exception handling???
+                return 0;
+            }
+           
+        }
+
+        public static async Task<int> ExportMdlToFile(string primaryCategory, string secondaryCategory, int index, XivRace race, string outputFileName = "", string fileExtension = ".fbx")
+        {
+            // Parameter check
+            if (String.IsNullOrWhiteSpace(primaryCategory)
+                || String.IsNullOrWhiteSpace(secondaryCategory)
+                || index < 0
+                || race < 0 // TODO: check race matches any value in enum?? race will always be default
+                || String.IsNullOrWhiteSpace(fileExtension))
+            {
+                // TODO: Return a way to tell user which value is null
+                return 0;
+            }
+
+            try
+            {
+                Tuple<IItemModel, Mdl>? modelData = ObtainMdlFromList(primaryCategory, secondaryCategory, index, race);
+
+                if (modelData == null) 
+                {
+                    // Couldn't retrieve model data
+                    return 0;
+                }
+
                 // If parameter outputFileName is empty, create the name from the other parameters
                 if (String.IsNullOrWhiteSpace(outputFileName))
                 {
                     outputFileName = primaryCategory + "_" + secondaryCategory + "_" + race.GetDisplayName() + "_" + index.ToString();
                 }
 
-                await mdl.ExportMdlToFile(itemModel, race, _outputDir.FullName + "\\" + outputFileName + fileExtension);
+                await modelData.Item2.ExportMdlToFile(modelData.Item1, race, _outputDir.FullName + "\\" + outputFileName + fileExtension);
             }
             catch (Exception e)
             {
