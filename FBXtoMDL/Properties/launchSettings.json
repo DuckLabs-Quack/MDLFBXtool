@@ -2,7 +2,7 @@
   "profiles": {
     "FBXtoMDL": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" \"C:\\\\FBXtoMDLoutput\" \"Character\" \"Hair\" 20 \"Hrothgar Male\""
+      "commandLineArgs": "export --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\" --primaryCategory \"Character\" --secondaryCategory \"Hair\" --index 1 --race \"Hrothgar Male\""
     }
   }
 }

@@ -20,7 +20,7 @@ namespace FBXtoMDL
         private static DirectoryInfo? _outputDir;
         private static List<IItem>? _itemlist;
 
-        public static bool CheckInternalVariables() 
+        public static bool InternalVariablesExist() 
         {
             if (_gameDir == null || _outputDir == null || _itemlist == null)
             {
@@ -54,7 +54,7 @@ namespace FBXtoMDL
         // TODO: Implement this method
         public static async Task<int> ConvertToMdlFile()
         {
-            if (!CheckInternalVariables())
+            if (!InternalVariablesExist())
             {
                 return 0;
             }
@@ -65,7 +65,7 @@ namespace FBXtoMDL
 
         public static async Task<int> ExportMdlToFile(string primaryCategory, string secondaryCategory, int index, XivRace race, string outputFileName = "", string fileExtension = ".fbx")
         {
-            if (!CheckInternalVariables()) 
+            if (!InternalVariablesExist()) 
             {
                 return 0;
             }

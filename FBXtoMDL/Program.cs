@@ -1,15 +1,46 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using xivModdingFramework.Cache;
-using static xivModdingFramework.Cache.XivCache;
+using System.CommandLine;
 
 using xivModdingFramework.General.Enums;
-using xivModdingFramework.Items.Categories;
-using xivModdingFramework.Items.DataContainers;
-using xivModdingFramework.Items.Interfaces;
-using xivModdingFramework.Models.FileTypes;
-using xivModdingFramework.Helpers;
-using xivModdingFramework.Items;
 using FBXtoMDL;
+using System.CommandLine.Binding;
+using System;
+using xivModdingFramework.Cache;
+
+// Class for cache input arguments. SetHandler doesn't have over 8 parameter method, so must create a binder class for arguments
+public class CacheOptions 
+{ 
+    public string? gameDir { get; set; }
+    public string? outputDir { get; set; }
+    public string? language { get; set; }
+    public int? dxmode{ get; set; }
+}
+// Binder class for CacheOptions
+public class CacheOptionsBinder : BinderBase<CacheOptions>
+{
+    private readonly Option<String> _gameDirOption;
+    private readonly Option<String> _outputDirOption;
+    private readonly Option<String> _languageOption;
+    private readonly Option<int> _dxmodeOption;
+
+    public CacheOptionsBinder(Option<string> gameDirOption, Option<string> outputDirOption, Option<String> languageOption, Option<int> dxmodeOption)
+    {
+        _gameDirOption = gameDirOption;
+        _outputDirOption = outputDirOption;
+        _languageOption = languageOption;
+        _dxmodeOption = dxmodeOption;
+    }
+
+    protected override CacheOptions GetBoundValue(BindingContext bindingContext) =>
+        new CacheOptions
+        {
+            gameDir = bindingContext.ParseResult.GetValueForOption(_gameDirOption),
+            outputDir = bindingContext.ParseResult.GetValueForOption(_outputDirOption),
+            language = bindingContext.ParseResult.GetValueForOption(_languageOption),
+            dxmode = bindingContext.ParseResult.GetValueForOption(_dxmodeOption)
+        };
+}
+
 
 // Console/UI code
 class MainClass
@@ -23,25 +54,150 @@ class MainClass
             return 1;
         }
 
-        DirectoryInfo gameDir = new DirectoryInfo(args[0]);
-        DirectoryInfo outputDir = new DirectoryInfo(args[1]);
-        string primaryCategory = args[2];
-        string secondaryCategory = args[3];
-        int index = Convert.ToInt32(args[4]);
-        XivRace race = XivRaces.GetXivRaceFromDisplayName(args[5]);
-        string outputFileName = args.Length == 7 ? args[6] : "";
-        string filetype = args.Length == 8 ? args[7] : ".fbx";
-        string language = args.Length == 9 ? args[8] : "en";
-        int dxmode = args.Length == 10 ? Convert.ToInt32(args[9]) : 11;
-
+#if DEBUG
         for (int i = 0; i < args.Length; i++)
         {
             Console.WriteLine($"Arg[{i}] = [{args[i]}]");
         }
+#endif
 
-        await FBXToMDL.Initialize(gameDir, outputDir, language, dxmode);
+        var rootCommand = new RootCommand("Commands");
 
-        return await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName, filetype);
+        // Argument options
+        var gameDirOption = new Option<string>(
+            name: "--gameDir",
+            description: "FFXIV game directory.");
+
+        var outputDirOption = new Option<string>(
+            name: "--outputDir",
+            description: "Export output directory.");
+
+        var languageOption = new Option<string>(
+            name: "--language",
+            description: "FFXIV language. Default is en.",
+            getDefaultValue: () => "en");
+
+        var dxmodeOption = new Option<int>(
+            name: "--dxmode",
+            description: "DirectX version. Default is 11.",
+            getDefaultValue: () => 11);
+
+        var primaryCategoryOption = new Option<string>(
+            name: "--primaryCategory",
+            description: "Primary category of the model. E.g. Character");
+
+        var secondaryCategoryOption = new Option<string>(
+            name: "--secondaryCategory",
+            description: "Secondary category of the model. E.g. Hair");
+
+        var indexOption = new Option<int>(
+            name: "--index",
+            description: "Used to obtain the model at the given index from [Primary Category][Secondary Category].");
+
+        var raceOption = new Option<string>(
+            name: "--race",
+            description: "FFXIV race for the model E.g. Hrothgar Male");        
+        
+        var outputFileNameOption = new Option<string>(
+            name: "--outputFileName",
+            description: "Output file name. Default output file name is [Primary Category]_[Secondary Category]_[Race]_[Index].",
+            getDefaultValue: () => "");        
+        
+        var filetypeOption = new Option<string>(
+            name: "--filetype",
+            description: "File type to export FFXIV model to. Default is fbx.",
+            getDefaultValue: () => ".fbx");        
+
+        // Commands
+        var initCommand = new Command("init", "Initialise the XIV cache. Currently required to execute this command before running any other commands.")
+        {
+            gameDirOption,
+            outputDirOption,
+            languageOption,
+            dxmodeOption
+        };
+
+        var exportCommand = new Command("export", "Exports a FFXIV model to the given format.")
+        {   
+            gameDirOption,
+            outputDirOption,
+            languageOption,
+            dxmodeOption,
+            primaryCategoryOption,
+            secondaryCategoryOption,
+            indexOption,
+            raceOption,
+            outputFileNameOption,
+            filetypeOption,
+        };
+
+        rootCommand.Add(gameDirOption);
+        rootCommand.Add(outputDirOption);
+        rootCommand.Add(languageOption);
+        rootCommand.Add(dxmodeOption);
+        rootCommand.Add(primaryCategoryOption);
+        rootCommand.Add(secondaryCategoryOption);
+        rootCommand.Add(indexOption);
+        rootCommand.Add(raceOption);
+        rootCommand.Add(outputFileNameOption);
+        rootCommand.Add(filetypeOption);
+
+        rootCommand.AddCommand(initCommand);
+        rootCommand.AddCommand(exportCommand);
+
+        initCommand.SetHandler(async (
+            CacheOptions cacheoptions) =>
+            {
+                // Initialise the cache
+                Console.WriteLine("Creating XIV cache...");
+
+                int result = await FBXToMDL.Initialize(new DirectoryInfo(cacheoptions.gameDir), new DirectoryInfo(cacheoptions.outputDir), cacheoptions.language, (int)cacheoptions.dxmode);
+                if (Convert.ToBoolean(result))
+                {
+                    Console.WriteLine("Successfully created XIV cache!");
+                }
+            },
+            new CacheOptionsBinder(gameDirOption, outputDirOption, languageOption, dxmodeOption)
+            );       
+        
+        exportCommand.SetHandler(async (
+            CacheOptions cacheoptions,
+            string primaryCategory,
+            string secondaryCategory,
+            int index,
+            string race,
+            string outputFileName,
+            string filetype) =>
+            {
+                if (!FBXToMDL.InternalVariablesExist())
+                {
+                    // Initialise the cache if it doesn't exist already
+                    Console.WriteLine("Creating XIV cache...");
+
+                    int result = await FBXToMDL.Initialize(new DirectoryInfo(cacheoptions.gameDir), new DirectoryInfo(cacheoptions.outputDir), cacheoptions.language, (int)cacheoptions.dxmode);
+                    if (Convert.ToBoolean(result))
+                    {
+                        Console.WriteLine("Successfully created XIV cache!");
+                    }
+
+                }
+
+
+                await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, XivRaces.GetXivRaceFromDisplayName(race), outputFileName, filetype);
+            },
+
+            new CacheOptionsBinder(gameDirOption, outputDirOption, languageOption, dxmodeOption),
+            primaryCategoryOption,
+            secondaryCategoryOption,
+            indexOption,
+            raceOption,
+            outputFileNameOption,
+            filetypeOption
+            );
+
+
+
+        return await rootCommand.InvokeAsync(args);
     }
 
 }

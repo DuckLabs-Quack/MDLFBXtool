@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FBXtoMDL\FBXtoMDL.csproj" />
+    <ProjectReference Include="..\xivModdingFramework\xivModdingFramework\xivModdingFramework.csproj" />
   </ItemGroup>
 
 </Project>
