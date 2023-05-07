@@ -45,6 +45,31 @@ public class CacheOptionsBinder : BinderBase<CacheOptions>
 // Console/UI code
 class MainClass
 {
+    // Helper method for initializing the XIV cache
+    internal static async Task<bool> InitializeXIVCache(CacheOptions cacheoptions)
+    {
+        if (!FBXToMDL.InternalVariablesExist())
+        {
+            // initialize the cache if it doesn't exist already
+            Console.WriteLine("Creating XIV cache...");
+
+            int result = await FBXToMDL.Initialize(new DirectoryInfo(cacheoptions.gameDir), new DirectoryInfo(cacheoptions.outputDir), cacheoptions.language, (int)cacheoptions.dxmode);
+            if (Convert.ToBoolean(result))
+            {
+                Console.WriteLine("Successfully created XIV cache!");
+            }
+            else 
+            {
+                // TODO: Handle reasons from int return
+                Console.WriteLine("Failed to create XIV cache!");
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
     public static async Task<int> Main(string[] args) 
     {
 
@@ -70,7 +95,7 @@ class MainClass
 
         var outputDirOption = new Option<string>(
             name: "--outputDir",
-            description: "Export output directory.");
+            description: "Output directory for all commands.");
 
         var languageOption = new Option<string>(
             name: "--language",
@@ -106,10 +131,14 @@ class MainClass
         var filetypeOption = new Option<string>(
             name: "--filetype",
             description: "File type to export FFXIV model to. Default is fbx.",
-            getDefaultValue: () => ".fbx");        
+            getDefaultValue: () => ".fbx");
+
+        var filePathOption = new Option<string>(
+            name: "--filepath",
+            description: "File to convert to FFXIV model format (.mdl file). Working formats: .fbx");
 
         // Commands
-        var initCommand = new Command("init", "Initialise the XIV cache. Currently required to execute this command before running any other commands.")
+        var initCommand = new Command("init", "initialize the XIV cache. Currently required to execute this command before running any other commands.")
         {
             gameDirOption,
             outputDirOption,
@@ -128,7 +157,20 @@ class MainClass
             indexOption,
             raceOption,
             outputFileNameOption,
-            filetypeOption,
+            filetypeOption
+        };
+
+        var convertCommand = new Command("convert", "Converts a file into a FFXIV model format (.mdl file). Working formats: .fbx")
+        {
+            gameDirOption,
+            outputDirOption,
+            languageOption,
+            dxmodeOption,
+            primaryCategoryOption,
+            secondaryCategoryOption,
+            indexOption,
+            raceOption,
+            filePathOption
         };
 
         rootCommand.Add(gameDirOption);
@@ -141,21 +183,16 @@ class MainClass
         rootCommand.Add(raceOption);
         rootCommand.Add(outputFileNameOption);
         rootCommand.Add(filetypeOption);
+        rootCommand.Add(filePathOption);
 
         rootCommand.AddCommand(initCommand);
         rootCommand.AddCommand(exportCommand);
+        rootCommand.AddCommand(convertCommand);
 
         initCommand.SetHandler(async (
             CacheOptions cacheoptions) =>
             {
-                // Initialise the cache
-                Console.WriteLine("Creating XIV cache...");
-
-                int result = await FBXToMDL.Initialize(new DirectoryInfo(cacheoptions.gameDir), new DirectoryInfo(cacheoptions.outputDir), cacheoptions.language, (int)cacheoptions.dxmode);
-                if (Convert.ToBoolean(result))
-                {
-                    Console.WriteLine("Successfully created XIV cache!");
-                }
+                await InitializeXIVCache(cacheoptions);
             },
             new CacheOptionsBinder(gameDirOption, outputDirOption, languageOption, dxmodeOption)
             );       
@@ -169,19 +206,10 @@ class MainClass
             string outputFileName,
             string filetype) =>
             {
-                if (!FBXToMDL.InternalVariablesExist())
+                if (!(await InitializeXIVCache(cacheoptions)))
                 {
-                    // Initialise the cache if it doesn't exist already
-                    Console.WriteLine("Creating XIV cache...");
-
-                    int result = await FBXToMDL.Initialize(new DirectoryInfo(cacheoptions.gameDir), new DirectoryInfo(cacheoptions.outputDir), cacheoptions.language, (int)cacheoptions.dxmode);
-                    if (Convert.ToBoolean(result))
-                    {
-                        Console.WriteLine("Successfully created XIV cache!");
-                    }
-
-                }
-
+                    return;
+                };
 
                 await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, XivRaces.GetXivRaceFromDisplayName(race), outputFileName, filetype);
             },
@@ -193,6 +221,30 @@ class MainClass
             raceOption,
             outputFileNameOption,
             filetypeOption
+            );
+
+        convertCommand.SetHandler(async (
+            CacheOptions cacheoptions,
+            string primaryCategory,
+            string secondaryCategory,
+            int index,
+            string race,
+            string filePathOption) =>
+            {
+                if(!(await InitializeXIVCache(cacheoptions)))
+                {
+                    return;
+                };
+
+                await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, XivRaces.GetXivRaceFromDisplayName(race), filePathOption);
+            },
+
+            new CacheOptionsBinder(gameDirOption, outputDirOption, languageOption, dxmodeOption),
+            primaryCategoryOption,
+            secondaryCategoryOption,
+            indexOption,
+            raceOption,
+            filePathOption
             );
 
 
