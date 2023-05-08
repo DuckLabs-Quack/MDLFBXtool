@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,7 +24,21 @@ namespace FBXtoMDL
         private static DirectoryInfo? _outputDir;
         private static List<IItem>? _itemlist;
 
-        public static bool InternalVariablesExist() 
+        internal static bool CheckConvertsExist() 
+        {
+            string path = Directory.GetCurrentDirectory();
+
+            // Check FBX converter executable exists
+            // TODO: Check entire directory files match???
+            if (File.Exists(path + "\\converters\\fbx\\converter.exe")) 
+            { 
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool CheckInternalVariablesExist() 
         {
             if (_gameDir == null || _outputDir == null || _itemlist == null)
             {
@@ -33,9 +48,16 @@ namespace FBXtoMDL
             return true;
         }
 
-        // Initialization method. Assigns values to internal variables.
+        // Initialization method. Assigns values to internal variables. Checks converts exist.
         public static async Task<int> Initialize(DirectoryInfo gameDir, DirectoryInfo outputDir, string language, int dxmode = 11)
         {
+            if (!CheckConvertsExist()) 
+            {
+                // If the converts don't exist, program terminates
+                // TODO: Add output message so user knows converters are required for program to run
+                return 0;
+            }
+
             _gameDir = gameDir;
             _outputDir = outputDir;
 
@@ -56,7 +78,7 @@ namespace FBXtoMDL
 
         private static Tuple<IItemModel, Mdl> ObtainMdlFromList(string primaryCategory, string secondaryCategory, int index, XivRace race)
         {
-            if (!InternalVariablesExist())
+            if (!CheckInternalVariablesExist())
             {
                 return null;
             }

@@ -48,7 +48,7 @@ class MainClass
     // Helper method for initializing the XIV cache
     internal static async Task<bool> InitializeXIVCache(CacheOptions cacheoptions)
     {
-        if (!FBXToMDL.InternalVariablesExist())
+        if (!FBXToMDL.CheckInternalVariablesExist())
         {
             // initialize the cache if it doesn't exist already
             Console.WriteLine("Creating XIV cache...");

@@ -25,14 +25,14 @@ namespace UnitTests
         public async Task Initialize()
         {
             await FBXToMDL.Initialize(gameDir, outputDir, language);
-            Assert.IsTrue(FBXToMDL.InternalVariablesExist());
+            Assert.IsTrue(FBXToMDL.CheckInternalVariablesExist());
         }
 
         [TestMethod]
         public async Task ExportMdlToFile()
         {
             await FBXToMDL.Initialize(gameDir, outputDir, language);
-            Assert.IsTrue(FBXToMDL.InternalVariablesExist());
+            Assert.IsTrue(FBXToMDL.CheckInternalVariablesExist());
 
             int result;
 
@@ -81,7 +81,7 @@ namespace UnitTests
         public async Task ExportMdlToFile_raceinvalid()
         {
             await FBXToMDL.Initialize(gameDir, outputDir, language);
-            Assert.IsTrue(FBXToMDL.InternalVariablesExist());
+            Assert.IsTrue(FBXToMDL.CheckInternalVariablesExist());
 
             int result;
             result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, 0, outputFileName + "6", filetype);
@@ -91,7 +91,7 @@ namespace UnitTests
         [TestMethod]
         public async Task ExportMdlToFile_nocache()
         {
-            Assert.IsFalse(FBXToMDL.InternalVariablesExist());
+            Assert.IsFalse(FBXToMDL.CheckInternalVariablesExist());
 
             int result;
             result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName + "10", filetype);
@@ -102,7 +102,7 @@ namespace UnitTests
         public async Task ConvertToMdlFile()
         {
             await FBXToMDL.Initialize(gameDir, outputDir, language);
-            Assert.IsTrue(FBXToMDL.InternalVariablesExist());
+            Assert.IsTrue(FBXToMDL.CheckInternalVariablesExist());
 
             int result;
 
