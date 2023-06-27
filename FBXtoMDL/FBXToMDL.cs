@@ -14,6 +14,7 @@ using xivModdingFramework.Items.DataContainers;
 using xivModdingFramework.Items.Interfaces;
 using xivModdingFramework.Models.FileTypes;
 using xivModdingFramework.SqPack.FileTypes;
+using System.ComponentModel.Design;
 
 namespace FBXtoMDL
 {
@@ -76,7 +77,7 @@ namespace FBXtoMDL
             return 1;
         }
 
-        private static Tuple<IItemModel, Mdl> ObtainMdlFromList(string primaryCategory, string secondaryCategory, int index, XivRace race)
+        private static Tuple<IItemModel, Mdl> ObtainMdlFromList(string primaryCategory, string secondaryCategory, int index, string mdlName)
         {
             if (!CheckInternalVariablesExist())
             {
@@ -86,8 +87,8 @@ namespace FBXtoMDL
             // Parameter check
             if (String.IsNullOrWhiteSpace(primaryCategory)
                 || String.IsNullOrWhiteSpace(secondaryCategory)
-                || index < 0
-                || race < 0 ) // TODO: check race matches any value in enum?? race will always be default
+                || String.IsNullOrWhiteSpace(mdlName)
+                || index < 0 ) 
             {
                 // TODO: Return a way to tell user which value is null
                 return null;
@@ -101,7 +102,7 @@ namespace FBXtoMDL
                 // Finds the given item in the XIV cache. Each item is structure with Primary and Secondary Categories,
                 // e.g. x.PrimaryCategory == "Character" && x.SecondaryCategory == "Hair" && x.Name == "Hrothgar Male"
                 // Obtaining the models from a category 
-                var item = _itemlist.Find(x => x.PrimaryCategory == primaryCategory && x.SecondaryCategory == secondaryCategory && x.Name == race.GetDisplayName());
+                var item = _itemlist.Find(x => x.PrimaryCategory == primaryCategory && x.SecondaryCategory == secondaryCategory && x.Name == mdlName);
 
                 if (item == null)
                 {
@@ -123,14 +124,27 @@ namespace FBXtoMDL
                 return null;
             }
         }
+        private static Tuple<IItemModel, Mdl>? GetItemModel(string primaryCategory, string secondaryCategory, int index, XivRace race, string mdlName)
+        {
+            // For 'Character' category, the model name is the same as the race name
+            if (primaryCategory == "Character")
+            {
+                return ObtainMdlFromList(primaryCategory, secondaryCategory, index, race.GetDisplayName());
 
-        public static async Task<int> ConvertToMdlFile(string primaryCategory, string secondaryCategory, int index, XivRace race, string filePath)
+            }
+            else
+            {
+                return ObtainMdlFromList(primaryCategory, secondaryCategory, index, mdlName);
+            }
+        }
+
+        public static async Task<int> ConvertToMdlFile(string primaryCategory, string secondaryCategory, int index, string mdlName, XivRace race, string filePath)
         {
             // Parameter check
             if (String.IsNullOrWhiteSpace(primaryCategory)
                 || String.IsNullOrWhiteSpace(secondaryCategory)
+                || String.IsNullOrWhiteSpace(mdlName)
                 || index < 0
-                || race < 0
                 || String.IsNullOrWhiteSpace(filePath)// TODO: check race matches any value in enum?? race will always be default
                 )
             {
@@ -140,7 +154,8 @@ namespace FBXtoMDL
 
             try
             {
-                Tuple<IItemModel, Mdl>? modelData = ObtainMdlFromList(primaryCategory, secondaryCategory, index, race);
+                Tuple<IItemModel, Mdl>? modelData = GetItemModel(primaryCategory, secondaryCategory, index, race, mdlName);
+
 
                 if (modelData == null)
                 {
@@ -159,7 +174,7 @@ namespace FBXtoMDL
            
         }
 
-        public static async Task<int> ExportMdlToFile(string primaryCategory, string secondaryCategory, int index, XivRace race, string outputFileName = "", string fileExtension = ".fbx")
+        public static async Task<int> ExportMdlToFile(string primaryCategory, string secondaryCategory, int index, string mdlName, XivRace race, string outputFileName = "", string fileExtension = ".fbx")
         {
             // Parameter check
             if (String.IsNullOrWhiteSpace(primaryCategory)
@@ -174,7 +189,7 @@ namespace FBXtoMDL
 
             try
             {
-                Tuple<IItemModel, Mdl>? modelData = ObtainMdlFromList(primaryCategory, secondaryCategory, index, race);
+                Tuple<IItemModel, Mdl>? modelData = GetItemModel(primaryCategory, secondaryCategory, index, race, mdlName);
 
                 if (modelData == null) 
                 {
@@ -185,7 +200,7 @@ namespace FBXtoMDL
                 // If parameter outputFileName is empty, create the name from the other parameters
                 if (String.IsNullOrWhiteSpace(outputFileName))
                 {
-                    outputFileName = primaryCategory + "_" + secondaryCategory + "_" + race.GetDisplayName() + "_" + index.ToString();
+                    outputFileName = primaryCategory + "_" + secondaryCategory + "_" + mdlName + "_" + race.GetDisplayName() + "_" + index.ToString();
                 }
 
                 await modelData.Item2.ExportMdlToFile(modelData.Item1, race, _outputDir.FullName + "\\" + outputFileName + fileExtension);

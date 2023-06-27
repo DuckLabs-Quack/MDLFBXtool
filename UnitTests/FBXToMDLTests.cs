@@ -15,6 +15,7 @@ namespace UnitTests
         string primaryCategory = "Character";
         string secondaryCategory = "Hair";
         int index = 2;
+        string mdlname = "Hrothgar Male";
         XivRace race = XivRaces.GetXivRaceFromDisplayName("Hrothgar Male");
         string outputFileName = "UNITTEST";
         string filetype = ".fbx";
@@ -37,43 +38,47 @@ namespace UnitTests
             int result;
 
             //** Base tests
-            //
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName, filetype);
-            Assert.IsTrue(result == 1);
+            // 
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname, race, outputFileName, filetype);
+            Assert.IsTrue(result == 1);            
 
             // Base test with default parameters
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname,  race);
+            Assert.IsTrue(result == 1);
+
+            // Export an item model
+            result = await FBXToMDL.ExportMdlToFile("Gear", "Body", index, "Abyss Cuirass", XivRaces.GetXivRaceFromDisplayName("Hyur Highlander Male"));
             Assert.IsTrue(result == 1);
 
             //** Missing parameter tests
-            result = await FBXToMDL.ExportMdlToFile("", secondaryCategory, index, race, outputFileName + "2", filetype);
+            result = await FBXToMDL.ExportMdlToFile("", secondaryCategory, index, mdlname, race, outputFileName + "2", filetype);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, "", index, race, outputFileName + "3", filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, "", index, mdlname, race, outputFileName + "3", filetype);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, "", index, race, outputFileName + "4", filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, "", index, mdlname, race, outputFileName + "4", filetype);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, -11, race, outputFileName + "5", filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, -11, mdlname, race, outputFileName + "5", filetype);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, null, filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname, race, null, filetype);
             Assert.IsTrue(result == 1);
 
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName + "7", "");
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname, race, outputFileName + "7", "");
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ExportMdlToFile("", "", -11, 0, "", "");
+            result = await FBXToMDL.ExportMdlToFile("", "", -11, "", 0, "", "");
             Assert.IsTrue(result == 0);
 
             //** Incorrect parameter tests
             // Invalid strings
-            result = await FBXToMDL.ExportMdlToFile("EH", "EH", index, race, outputFileName + "8", "EH");
+            result = await FBXToMDL.ExportMdlToFile("EH", "EH", index, mdlname, race, outputFileName + "8", "EH");
             Assert.IsTrue(result == 0);
 
             // Index out of range
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, 28392, race, outputFileName + "9", "");
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, 28392, mdlname, race, outputFileName + "9", "");
             Assert.IsTrue(result == 0);
         }
 
@@ -84,7 +89,7 @@ namespace UnitTests
             Assert.IsTrue(FBXToMDL.CheckInternalVariablesExist());
 
             int result;
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, 0, outputFileName + "6", filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname, 0, outputFileName + "6", filetype);
             Assert.IsTrue(result == 0);
         }
 
@@ -94,7 +99,7 @@ namespace UnitTests
             Assert.IsFalse(FBXToMDL.CheckInternalVariablesExist());
 
             int result;
-            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, race, outputFileName + "10", filetype);
+            result = await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname, race, outputFileName + "10", filetype);
             Assert.IsTrue(result == 0);
         }
 
@@ -108,32 +113,32 @@ namespace UnitTests
 
             //** Base tests
             //
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, mdlname, race, fbxfilePath);
             Assert.IsTrue(result == 1);
 
             //** Missing parameter tests
-            result = await FBXToMDL.ConvertToMdlFile("", secondaryCategory, index, race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile("", secondaryCategory, index, mdlname,  race, fbxfilePath);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, "", index, race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, "", index, mdlname,  race, fbxfilePath);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, -11, race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, -11, mdlname,  race, fbxfilePath);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, race, "");
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, mdlname,  race, "");
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ConvertToMdlFile("", "", -11, race, "");
+            result = await FBXToMDL.ConvertToMdlFile("", "", -11, mdlname,  race, "");
             Assert.IsTrue(result == 0);
 
             //** Incorrect parameter tests
             // Invalid strings
-            result = await FBXToMDL.ConvertToMdlFile("EH", "EH", index, race, "NOT_A_PATH");
+            result = await FBXToMDL.ConvertToMdlFile("EH", "EH", index, mdlname,  race, "NOT_A_PATH");
             Assert.IsTrue(result == 0);
 
             // Index out of range
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, 28392, race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, 28392, mdlname,  race, fbxfilePath);
             Assert.IsTrue(result == 0);
 
         }

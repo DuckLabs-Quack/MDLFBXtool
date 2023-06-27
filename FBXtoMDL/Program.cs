@@ -117,7 +117,11 @@ class MainClass
 
         var indexOption = new Option<int>(
             name: "--index",
-            description: "Used to obtain the model at the given index from [Primary Category][Secondary Category].");
+            description: "Used to obtain the model at the given index from [Primary Category][Secondary Category]. This only applies to 'Character' primary category."); //TODO: Check that last statement is accurate!
+
+        var mdlnameOption = new Option<string>(
+            name: "--mdlName",
+            description: "FFXIV model name for the model E.g. Abyss Cuirass");  
 
         var raceOption = new Option<string>(
             name: "--race",
@@ -155,6 +159,7 @@ class MainClass
             primaryCategoryOption,
             secondaryCategoryOption,
             indexOption,
+            mdlnameOption,
             raceOption,
             outputFileNameOption,
             filetypeOption
@@ -169,6 +174,7 @@ class MainClass
             primaryCategoryOption,
             secondaryCategoryOption,
             indexOption,
+            mdlnameOption,
             raceOption,
             filePathOption
         };
@@ -180,6 +186,7 @@ class MainClass
         rootCommand.Add(primaryCategoryOption);
         rootCommand.Add(secondaryCategoryOption);
         rootCommand.Add(indexOption);
+        rootCommand.Add(mdlnameOption);
         rootCommand.Add(raceOption);
         rootCommand.Add(outputFileNameOption);
         rootCommand.Add(filetypeOption);
@@ -202,6 +209,7 @@ class MainClass
             string primaryCategory,
             string secondaryCategory,
             int index,
+            string mdlname,
             string race,
             string outputFileName,
             string filetype) =>
@@ -211,13 +219,14 @@ class MainClass
                     return;
                 };
 
-                await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, XivRaces.GetXivRaceFromDisplayName(race), outputFileName, filetype);
+                await FBXToMDL.ExportMdlToFile(primaryCategory, secondaryCategory, index, mdlname, XivRaces.GetXivRaceFromDisplayName(race), outputFileName, filetype);
             },
 
             new CacheOptionsBinder(gameDirOption, outputDirOption, languageOption, dxmodeOption),
             primaryCategoryOption,
             secondaryCategoryOption,
             indexOption,
+            mdlnameOption,
             raceOption,
             outputFileNameOption,
             filetypeOption
@@ -228,6 +237,7 @@ class MainClass
             string primaryCategory,
             string secondaryCategory,
             int index,
+            string mdlname,
             string race,
             string filePathOption) =>
             {
@@ -236,13 +246,14 @@ class MainClass
                     return;
                 };
 
-                await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, XivRaces.GetXivRaceFromDisplayName(race), filePathOption);
+                await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, mdlname, XivRaces.GetXivRaceFromDisplayName(race), filePathOption);
             },
 
             new CacheOptionsBinder(gameDirOption, outputDirOption, languageOption, dxmodeOption),
             primaryCategoryOption,
             secondaryCategoryOption,
             indexOption,
+            mdlnameOption,
             raceOption,
             filePathOption
             );

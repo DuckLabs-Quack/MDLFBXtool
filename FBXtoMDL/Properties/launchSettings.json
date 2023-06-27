@@ -2,15 +2,19 @@
   "profiles": {
     "FBXtoMDL-convert": {
       "commandName": "Project",
-      "commandLineArgs": "convert --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\" --primaryCategory \"Character\" --secondaryCategory \"Hair\" --index 1 --race \"Hrothgar Male\" --filepath \"C:\\\\Blender\\\\FF14\\\\Windcallerhair\\\\Windcaller_withoutbead_hrothgar.fbx\""
+      "commandLineArgs": "convert --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\" --primaryCategory \"Character\" --secondaryCategory \"Hair\" --index 1 --mdlname \"meh\" --race \"Hrothgar Male\" --filepath \"C:\\\\Blender\\\\FF14\\\\Windcallerhair\\\\Windcaller_withoutbead_hrothgar.fbx\""
     },
     "FBXtoMDL-export": {
       "commandName": "Project",
-      "commandLineArgs": "export --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\" --primaryCategory \"Character\" --secondaryCategory \"Hair\" --index 1 --race \"Hrothgar Male\""
+      "commandLineArgs": "export --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\" --primaryCategory \"Character\" --secondaryCategory \"Hair\" --index 1 --mdlname \"meh\" --race \"Hrothgar Male\""
     },
     "FBXtoMDL-init": {
       "commandName": "Project",
       "commandLineArgs": "init --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\""
+    },
+    "FBXtoMDL-exportEquipment": {
+      "commandName": "Project",
+      "commandLineArgs": "export --gameDir \"C:\\\\Program Files (x86)\\\\Steam\\\\SteamApps\\\\common\\\\FINAL FANTASY XIV Online\\\\game\\\\sqpack\\\\ffxiv\" --outputDir \"C:\\\\FBXtoMDLoutput\" --primaryCategory \"Gear\" --secondaryCategory \"Body\" --index 1 --mdlname \"Abyss Cuirass\" --race \"Hyur Highlander Male\""
     }
   }
 }
