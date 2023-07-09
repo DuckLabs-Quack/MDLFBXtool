@@ -93,9 +93,6 @@ namespace FBXtoMDL
                 return null;
             }
 
-            // Specifies the number ID to obtain from the given item
-            var xivModelInfo = new XivModelInfo { SecondaryID = index };
-
             try
             {
                 // Finds the given item in the XIV cache. Each item is structure with Primary and Secondary Categories,
@@ -113,7 +110,9 @@ namespace FBXtoMDL
                 Mdl mdl = new Mdl(_gameDir, dataFile);
 
                 IItemModel itemModel = (IItemModel)item;
-                itemModel.ModelInfo = xivModelInfo;
+
+                // Specifies the number ID to obtain from the given item
+                itemModel.ModelInfo.SecondaryID = index;
 
                 return Tuple.Create(itemModel,mdl);
             }
