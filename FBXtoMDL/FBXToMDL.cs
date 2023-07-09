@@ -55,8 +55,7 @@ namespace FBXtoMDL
             if (!CheckConvertsExist()) 
             {
                 // If the converts don't exist, program terminates
-                // TODO: Add output message so user knows converters are required for program to run
-                return 0;
+                return -1;
             }
 
             _gameDir = gameDir;

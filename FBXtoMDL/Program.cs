@@ -54,13 +54,17 @@ class MainClass
             Console.WriteLine("Creating XIV cache...");
 
             int result = await FBXToMDL.Initialize(new DirectoryInfo(cacheoptions.gameDir), new DirectoryInfo(cacheoptions.outputDir), cacheoptions.language, (int)cacheoptions.dxmode);
-            if (Convert.ToBoolean(result))
+            if (result == 1)
             {
                 Console.WriteLine("Successfully created XIV cache!");
             }
-            else 
+            else if (result == -1) 
             {
-                // TODO: Handle reasons from int return
+                Console.WriteLine("Could not find fbx converts in program directory!");
+                return false;
+            }
+            else
+            {
                 Console.WriteLine("Failed to create XIV cache!");
                 return false;
             }
@@ -90,11 +94,11 @@ class MainClass
 
         // Argument options
         var gameDirOption = new Option<string>(
-            name: "--gameDir",
+            name: "--gamedir",
             description: "FFXIV game directory.");
 
         var outputDirOption = new Option<string>(
-            name: "--outputDir",
+            name: "--outputdir",
             description: "Output directory for all commands.");
 
         var languageOption = new Option<string>(
@@ -108,11 +112,11 @@ class MainClass
             getDefaultValue: () => 11);
 
         var primaryCategoryOption = new Option<string>(
-            name: "--primaryCategory",
+            name: "--primarycategory",
             description: "Primary category of the model. E.g. Character");
 
         var secondaryCategoryOption = new Option<string>(
-            name: "--secondaryCategory",
+            name: "--secondarycategory",
             description: "Secondary category of the model. E.g. Hair");
 
         var indexOption = new Option<int>(
@@ -120,7 +124,7 @@ class MainClass
             description: "Used to obtain the model at the given index from [Primary Category][Secondary Category]. This only applies to 'Character' primary category."); //TODO: Check that last statement is accurate!
 
         var mdlnameOption = new Option<string>(
-            name: "--mdlName",
+            name: "--mdlname",
             description: "FFXIV model name for the model E.g. Abyss Cuirass");  
 
         var raceOption = new Option<string>(
@@ -128,7 +132,7 @@ class MainClass
             description: "FFXIV race for the model E.g. Hrothgar Male");        
         
         var outputFileNameOption = new Option<string>(
-            name: "--outputFileName",
+            name: "--outputfilename",
             description: "Output file name. Default output file name is [Primary Category]_[Secondary Category]_[Race]_[Index].",
             getDefaultValue: () => "");        
         
