@@ -2,8 +2,8 @@ import subprocess
 import os
 import argparse
 
-def convert(exepath, gamedir, outputdir, primarycategory, secondarycategory, index, race, filepath):
-        subprocess.Popen([exepath,"convert","--gamedir", gamedir, "--outputdir", outputdir, "--primarycategory", primarycategory, "--secondarycategory", secondarycategory, "--index", str(index), "--race", race, "--filepath", filepath])        
+def convert(exepath, gamedir, outputdir, primarycategory, secondarycategory, index, mdlname, race, filepath):
+        subprocess.Popen([exepath,"convert","--gamedir", gamedir, "--outputdir", outputdir, "--primarycategory", primarycategory, "--secondarycategory", secondarycategory, "--index", str(index), "--mdlname", mdlname, "--race", race, "--filepath", filepath])        
         
 def convert_args(args):
         # subprocess.Popen([r"C:\ff14modsrc\FBXtoMDL\FBXtoMDL\bin\Debug\net7.0\FBXtoMDL.exe","convert","--gameDir",
