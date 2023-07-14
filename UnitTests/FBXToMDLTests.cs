@@ -20,7 +20,8 @@ namespace UnitTests
         string outputFileName = "UNITTEST";
         string filetype = ".fbx";
 
-        string fbxfilePath = "C:\\Blender\\FF14\\Windcallerhair\\Windcaller_withoutbead_hrothgar.fbx";
+        string fbxfilePathHair = "C:\\Blender\\FF14\\Windcallerhair\\Windcaller_withoutbead_hrothgar.fbx";
+        string fbxfilePathGear = "C:\\Blender\\FF14\\Abysscuirass\\abysscuirass_noarmsblend.fbx";
 
         [TestMethod]
         public async Task Initialize()
@@ -113,17 +114,20 @@ namespace UnitTests
 
             //** Base tests
             //
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, mdlname, race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, mdlname, race, fbxfilePathHair);
+            Assert.IsTrue(result == 1);
+
+            result = await FBXToMDL.ConvertToMdlFile("Gear", "Body", index, "Abyss Cuirass", XivRaces.GetXivRaceFromDisplayName("Hyur Highlander Male"), fbxfilePathGear);
             Assert.IsTrue(result == 1);
 
             //** Missing parameter tests
-            result = await FBXToMDL.ConvertToMdlFile("", secondaryCategory, index, mdlname,  race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile("", secondaryCategory, index, mdlname,  race, fbxfilePathHair);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, "", index, mdlname,  race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, "", index, mdlname,  race, fbxfilePathHair);
             Assert.IsTrue(result == 0);
 
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, -11, mdlname,  race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, -11, mdlname,  race, fbxfilePathHair);
             Assert.IsTrue(result == 0);
 
             result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, index, mdlname,  race, "");
@@ -138,7 +142,7 @@ namespace UnitTests
             Assert.IsTrue(result == 0);
 
             // Index out of range
-            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, 28392, mdlname,  race, fbxfilePath);
+            result = await FBXToMDL.ConvertToMdlFile(primaryCategory, secondaryCategory, 28392, mdlname,  race, fbxfilePathHair);
             Assert.IsTrue(result == 0);
 
         }
