@@ -142,8 +142,9 @@ namespace FBXtoMDL
             if (String.IsNullOrWhiteSpace(primaryCategory)
                 || String.IsNullOrWhiteSpace(secondaryCategory)
                 || String.IsNullOrWhiteSpace(mdlName)
+                || race < 0 // TODO: check race matches any value in enum?? race will always be default
                 || index < 0
-                || String.IsNullOrWhiteSpace(filePath)// TODO: check race matches any value in enum?? race will always be default
+                || String.IsNullOrWhiteSpace(filePath)
                 )
             {
                 // TODO: Return a way to tell user which value is null
@@ -161,7 +162,7 @@ namespace FBXtoMDL
                     return 0;
                 }
 
-                await modelData.Item2.ImportModel(modelData.Item1, race, filePath, null, null, null, "", null, false);
+                await modelData.Item2.ImportModel(modelData.Item1, race, filePath);
                 return 1;
             }
             catch (Exception e)
