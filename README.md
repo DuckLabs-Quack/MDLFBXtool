@@ -15,37 +15,48 @@ Exports a FFXIV model to the given format. Working formats: .fbx
 
 ### Options
 
-  --gamedir 
+  --gamedir
+
   FFXIV game directory.
 
   --outputdir
+
   Output directory for all commands.
 
   --language
+
   FFXIV language. Default is en. [default: en]
 
   --dxmode
+
   DirectX version. Default is 11. [default: 11]
 
   --primarycategory
+
   Primary category of the model. E.g. Character
 
   --secondarycategory
+
   Secondary category of the model. E.g. Hair
 
   --index
+
   Used to obtain the model at the given index from 'Primary Category''Secondary Category'. This only applies to 'Character' primary category.
 
   --mdlname
+
   FFXIV model name for the model E.g. Abyss Cuirass
 
   --race
+
   FFXIV race for the model E.g. Hrothgar Male
 
   --outputfilename
+
   Output file name. Default output file name is '[Primary Category]__[Secondary Category]__[Race]__[Index]'.   
 
   --filetype
+
   File type to export FFXIV model to. Default is fbx. [default: .fbx]
 
 ### Example command
