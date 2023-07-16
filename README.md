@@ -1,5 +1,7 @@
 # MDLFBXtool
-A simple tool to export FFXIV models to FBX, and convert FBX to FFXIV's MDLs. This tool should be used along side TexTools to obtain model information such as 'Primary Category' and 'Secondary Category' names. 
+A simple tool to export FFXIV models to FBX, and convert FBX to FFXIV's MDLs. 
+
+This tool should be used along side TexTools to obtain model information such as 'Primary Category' and 'Secondary Category' names. 
 
 Please note, this tool is still in development and has many issues, particularly converting FBX to MDLs. Only character hair and equipment chest pieces have been tested so far.
 
