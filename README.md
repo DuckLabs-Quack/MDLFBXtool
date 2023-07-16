@@ -57,38 +57,47 @@ Converts a file into a FFXIV model format (.mdl file). Working formats: .fbx
 ### Options
 
   --gamedir
+  
   FFXIV game directory.
 
   --outputdir
+  
   Output directory for all commands.
 
   --language
+  
   FFXIV language. Default is en. [default: en]
 
   --dxmode
+  
   DirectX version. Default is 11. [default: 11]
 
   --primarycategory
+  
   Primary category of the model. E.g. Character
 
   --secondarycategory
+  
   Secondary category of the model. E.g. Hair
 
   --index
+  
   Used to obtain the model at the given index from 'Primary Category''Secondary Category'. This only applies to 'Character' primary category.
 
   --mdlname
+  
   FFXIV model name for the model E.g. Abyss Cuirass
 
   --race
+  
   FFXIV race for the model E.g. Hrothgar Male
 
   --filepath
+  
   File to convert to FFXIV model format (.mdl file). Working formats: .fbx
 
 ### Example command
 > convert --gamedir "C:\\Program Files (x86)\\Steam\\SteamApps\\common\\FINAL FANTASY XIV Online\\game\\sqpack\\ffxiv" --outputdir "C:\\FBXtoMDLoutput" --primarycategory "Character" --secondarycategory "Hair" --index 1 --mdlname "meh" --race "Hrothgar Male" --filepath "C:\\Blender\\FF14\\Windcallerhair\\Windcaller_withoutbead_hrothgar.fbx"
-
 
 ## Blender support
 There are two python script in the 'mdl_fbx_tool'. 'mdl_fbx_ui_menu.py' is the UI script to be ran in Blender.'mdl_fbx_tool.py' is the main python module used to call the MDLFBXtool executable via python. 
