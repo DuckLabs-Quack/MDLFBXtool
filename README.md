@@ -69,7 +69,9 @@ Example command:
 
 
 ## Blender support
-There are two python script in the 'mdl_fbx_tool'. 'mdl_fbx_ui_menu.py' is the UI script to be ran in Blender. 'mdl_fbx_tool.py' is the main python module used to call the MDLFBXtool executable via python. This is not a full Blender addon yet. You'll need to add the 'mdl_fbx_tool.py' to your Blender directory at '\Blender Foundation\Blender 3.5\3.5\scripts\modules' and run the 'mdl_fbx_ui_menu.py' from the Blender-> Scripting menu.
+There are two python script in the 'mdl_fbx_tool'. 'mdl_fbx_ui_menu.py' is the UI script to be ran in Blender.'mdl_fbx_tool.py' is the main python module used to call the MDLFBXtool executable via python. 
+
+This is not a full Blender addon yet. You'll need to add the 'mdl_fbx_tool.py' to your Blender directory at '\Blender Foundation\Blender 3.5\3.5\scripts\modules' and run the 'mdl_fbx_ui_menu.py' from the Blender-> Scripting menu.
 
 Currently, Only exporting MDL to FBX and importing directly into Blender is supported by the script.
 
