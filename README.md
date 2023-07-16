@@ -14,33 +14,55 @@ Copy the 'converters' folder over to the project build output directory.
 Exports a FFXIV model to the given format. Working formats: .fbx
 
 Options:
+
   --gamedir <gamedir>                      FFXIV game directory.
+
   --outputdir <outputdir>                  Output directory for all commands.
+
   --language <language>                    FFXIV language. Default is en. [default: en]
+
   --dxmode <dxmode>                        DirectX version. Default is 11. [default: 11]
+
   --primarycategory <primarycategory>      Primary category of the model. E.g. Character
+
   --secondarycategory <secondarycategory>  Secondary category of the model. E.g. Hair
+
   --index <index>                          Used to obtain the model at the given index from 'Primary Category''Secondary Category'. This only applies to 'Character' primary category.
+
   --mdlname <mdlname>                      FFXIV model name for the model E.g. Abyss Cuirass
+
   --race <race>                            FFXIV race for the model E.g. Hrothgar Male
+
   --outputfilename <outputfilename>        Output file name. Default output file name is '[Primary Category]__[Secondary Category]__[Race]__[Index]'.   
+
   --filetype <filetype>                    File type to export FFXIV model to. Default is fbx. [default: .fbx]
+
+> export --gamedir "C:\\Program Files (x86)\\Steam\\SteamApps\\common\\FINAL FANTASY XIV Online\\game\\sqpack\\ffxiv" --outputdir "C:\\FBXtoMDLoutput" --primarycategory "Gear" --secondarycategory "Body" --index 1 --mdlname "Abyss Cuirass" --race "Hyur Highlander Male"
 
 ## Convert FBX To MDL
 Converts a file into a FFXIV model format (.mdl file). Working formats: .fbx
 
 Options:
+
   --gamedir <gamedir>                      FFXIV game directory.
+
   --outputdir <outputdir>                  Output directory for all commands.
+
   --language <language>                    FFXIV language. Default is en. [default: en]
+
   --dxmode <dxmode>                        DirectX version. Default is 11. [default: 11]
+
   --primarycategory <primarycategory>      Primary category of the model. E.g. Character
+
   --secondarycategory <secondarycategory>  Secondary category of the model. E.g. Hair
+
   --index <index>                          Used to obtain the model at the given index from 'Primary Category''Secondary Category'. This only applies to 'Character' primary category.
+
   --mdlname <mdlname>                      FFXIV model name for the model E.g. Abyss Cuirass
+
   --race <race>                            FFXIV race for the model E.g. Hrothgar Male
+
   --filepath <filepath>                    File to convert to FFXIV model format (.mdl file). Working formats: .fbx
-  -?, -h, --help                           Show help and usage information
 
 Example command:
 > convert --gamedir "C:\\Program Files (x86)\\Steam\\SteamApps\\common\\FINAL FANTASY XIV Online\\game\\sqpack\\ffxiv" --outputdir "C:\\FBXtoMDLoutput" --primarycategory "Character" --secondarycategory "Hair" --index 1 --mdlname "meh" --race "Hrothgar Male" --filepath "C:\\Blender\\FF14\\Windcallerhair\\Windcaller_withoutbead_hrothgar.fbx"
